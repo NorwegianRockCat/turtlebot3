@@ -39,8 +39,9 @@ catkin_package(
 ################################################################################
 # Install
 ################################################################################
-catkin_install_python(PROGRAMS
-  nodes/turtlebot3_teleop_key
+catkin_install_python(PROGRAMS 
+  scripts/turtlebot3_teleop_key
+  scripts/turtlebot3_teleop_key_dvorak
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
