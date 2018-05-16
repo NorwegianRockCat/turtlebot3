@@ -49,6 +49,37 @@ space key, o : force stop
 CTRL-C to quit
 """
 
+deccel_curve_siso = [0.007378, 0.032657, 0.056174, 0.077887, 0.097841, 0.115997, 0.132390, 0.147011, 0.159852, 0.170909, 0.180193, 0.187693, 0.193420, 0.197368, 0.199539, 0.20]
+accel_curve_siso = [0.000069, 0.001454, 0.004617, 0.009564, 0.016279, 0.024770, 0.035056, 0.047110, 0.060930, 0.076549, 0.093918, 0.113093, 0.134045, 0.156743, 0.181236, 0.20]
+
+DECCEL_CURVE_TAIL = len(deccel_curve_siso) - 1
+ACCEL_CURVE_TAIL = len(accel_curve_siso) - 1
+
+accel_index = 0
+deccel_index = DECCEL_CURVE_TAIL
+
+def speedUp():
+    global accel_index
+    global deccel_index
+    speed = accel_curve_siso[accel_index]
+    accel_index = accel_index + 1
+    if accel_index > ACCEL_CURVE_TAIL:
+        accel_index = ACCEL_CURVE_TAIL
+
+    deccel_index = DECCEL_CURVE_TAIL - accel_index;
+    return speed
+
+def speedDown():
+    global accel_index
+    global deccel_index
+    speed = 0.2 - deccel_curve_siso[deccel_index]
+    deccel_index = deccel_index + 1
+    if deccel_index > DECCEL_CURVE_TAIL:
+        print "Brake MAXXED!"
+        deccel_index = DECCEL_CURVE_TAIL
+    accel_index = ACCEL_CURVE_TAIL - deccel_index;
+    return speed
+    
 def getKey():
     tty.setraw(sys.stdin.fileno())
     rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
@@ -79,11 +110,17 @@ if __name__=="__main__":
         while(1):
             key = getKey()
             if key == ',' :
-                target_linear_vel = target_linear_vel + 0.001
+                if target_linear_vel >= 0:
+                    target_linear_vel = speedUp()
+                else:
+                    target_linear_vel = -speedDown()
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'q' :
-                target_linear_vel = target_linear_vel - 0.001
+                if target_linear_vel > 0:
+                    target_linear_vel = speedDown()
+                else:
+                    target_linear_vel = -speedUp()
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'a' :
@@ -103,6 +140,8 @@ if __name__=="__main__":
                 control_linear_vel  = 0
                 target_angular_vel  = 0
                 control_angular_vel = 0
+                accel_index = 0
+                deccel_index = 0
                 print vels(0, 0)
             elif status == 14 :
                 print msg
@@ -126,7 +165,7 @@ if __name__=="__main__":
             twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = control_angular_vel
             pub.publish(twist)
 
-    except:
+    except Exception as e:
         print e
 
     finally:
