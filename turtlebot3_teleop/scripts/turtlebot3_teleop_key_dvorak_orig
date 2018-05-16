@@ -65,10 +65,6 @@ def vels(target_linear_vel, target_angular_vel):
 
 if __name__=="__main__":
     settings = termios.tcgetattr(sys.stdin)
-    accel_curve_siso = [0.000069, 0.001454, 0.004617, 0.009564, 0.016279, 0.024770, 0.035056, 0.047110, 0.060930, 0.076549, 0.093918, 0.113093, 0.134045, 0.156743, 0.181236, 0.20]
-    deccel_curve_siso = [0.007378, 0.032657, 0.056174, 0.077887, 0.097841, 0.115997, 0.132390, 0.147011, 0.159852, 0.170909, 0.180193, 0.187693, 0.193420, 0.197368, 0.199539]
-    accel_index = 0
-    deccel_index = 0
 
     rospy.init_node('turtlebot3_teleop')
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=5)
@@ -83,19 +79,11 @@ if __name__=="__main__":
         while(1):
             key = getKey()
             if key == ',' :
-                target_linear_vel = accel_curve_siso[accel_index]
-                accel_index = accel_index + 1
-                if accel_index == len(accel_curve_siso):
-                    print "Speed MAXXED!"
-                    accel_index = len(accel_curve_siso) - 1
+                target_linear_vel = target_linear_vel + 0.001
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'q' :
-                target_linear_vel = 0.2 - deccel_curve_siso[deccel_index]
-                deccel_index = deccel_index + 1
-                if deccel_index == len(deccel_curve_siso):
-                    print "Brake MAXXED!"
-                    deccel_index = len(deccel_curve_siso) - 1
+                target_linear_vel = target_linear_vel - 0.001
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'a' :
@@ -115,8 +103,6 @@ if __name__=="__main__":
                 control_linear_vel  = 0
                 target_angular_vel  = 0
                 control_angular_vel = 0
-                accel_index = 0
-                deccel_index = 0
                 print vels(0, 0)
             elif status == 14 :
                 print msg
