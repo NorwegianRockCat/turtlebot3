@@ -79,11 +79,11 @@ if __name__=="__main__":
         while(1):
             key = getKey()
             if key == ',' :
-                target_linear_vel = target_linear_vel + 0.001
+                target_linear_vel = target_linear_vel + 0.1
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'q' :
-                target_linear_vel = target_linear_vel - 0.001
+                target_linear_vel = target_linear_vel - 0.1
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'a' :

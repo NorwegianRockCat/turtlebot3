@@ -49,8 +49,8 @@ space key, o : force stop
 CTRL-C to quit
 """
 
-deccel_curve_siso = [0.007378, 0.032657, 0.056174, 0.077887, 0.097841, 0.115997, 0.132390, 0.147011, 0.159852, 0.170909, 0.180193, 0.187693, 0.193420, 0.197368, 0.199539, 0.20]
-accel_curve_siso = [0.000069, 0.001454, 0.004617, 0.009564, 0.016279, 0.024770, 0.035056, 0.047110, 0.060930, 0.076549, 0.093918, 0.113093, 0.134045, 0.156743, 0.181236, 0.20]
+deccel_curve_siso = [0.007378, 0.032657, 0.056174, 0.077887, 0.097841, 0.115997, 0.132390, 0.147011, 0.159852, 0.170909, 0.180193, 0.187693, 0.193420, 0.197368, 0.199539, 0.22]
+accel_curve_siso = [0.000069, 0.001454, 0.004617, 0.009564, 0.016279, 0.024770, 0.035056, 0.047110, 0.060930, 0.076549, 0.093918, 0.113093, 0.134045, 0.156743, 0.181236, 0.22]
 
 DECCEL_CURVE_TAIL = len(deccel_curve_siso) - 1
 ACCEL_CURVE_TAIL = len(accel_curve_siso) - 1
@@ -128,7 +128,7 @@ if __name__=="__main__":
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'f' :
-                target_linear_vel = 3.14
+                target_linear_vel = accel_curve_siso[-1]
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
             elif key == 'e' :
